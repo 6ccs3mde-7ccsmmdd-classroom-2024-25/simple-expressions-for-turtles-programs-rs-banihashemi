@@ -42,11 +42,28 @@ enum TurnCommand:
 	left | right
 ;
 
-IntExpression:
-	val = INT |
-	var = [VariableDeclaration]
+Addition returns IntExpression:
+    Multiplication ({Addition.left = current} '+' right += Multiplication)*
 ;
 
+Multiplication returns IntExpression:
+    PrimaryExpression ({Multiplication.left = current} '*' right += PrimaryExpression)*
+;
+
+PrimaryExpression returns IntExpression:
+    IntLiteral |
+    VariableReference |
+    '(' Addition ')'
+;
+
+IntLiteral:
+    val = INT
+;
+
+VariableReference:
+    var = [VariableDeclaration]
+;
+   
 REAL returns ecore::EFloat hidden():
 	INT? "." INT
 ; 
